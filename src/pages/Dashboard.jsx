@@ -27,8 +27,16 @@ import { currency, cx, number, percent } from "../lib/format.js";
 
 const ranges = ["1D", "1W", "1M", "1Y", "ALL"];
 
+const marketTabs = [
+  { id: "all", label: "All" },
+  { id: "stocks", label: "Stocks" },
+  { id: "crypto", label: "Crypto" },
+  { id: "futures", label: "Futures" },
+];
+
 export default function Dashboard() {
   const [range, setRange] = useState("1M");
+  const [marketTab, setMarketTab] = useState("all");
   const portfolioReq = useAsync(getPortfolio, []);
   const seriesReq = useAsync(() => getPortfolioSeries(range), [range]);
   const allocationReq = useAsync(getAllocation, []);
@@ -42,6 +50,14 @@ export default function Dashboard() {
   const p = portfolioReq.data;
   const series = seriesReq.data?.map((d) => d.v) ?? [];
   const up = (series.at(-1) ?? 0) >= (series[0] ?? 0);
+
+  const highlights = marketsReq.data
+    ? marketsReq.data
+        .filter((a) => marketTab === "all" || a.category === marketTab)
+        .slice()
+        .sort((a, b) => Math.abs(b.change24h) - Math.abs(a.change24h))
+        .slice(0, marketTab === "all" ? 4 : 3)
+    : [];
 
   return (
     <>
@@ -73,6 +89,42 @@ export default function Dashboard() {
               </div>
             </BalanceCard>
           )}
+
+          <Card>
+            <CardHeader title="Market highlights" />
+            {marketsReq.loading ? (
+              <LoadingState rows={3} />
+            ) : (
+              <>
+                <div className="border-b border-border px-5 pt-4">
+                  <Tabs items={marketTabs} value={marketTab} onChange={setMarketTab} size="sm" />
+                </div>
+                <ul>
+                  {highlights.map((asset) => (
+                    <li
+                      key={asset.symbol}
+                      className="flex items-center gap-3 border-b border-border px-5 py-3.5 last:border-0"
+                    >
+                      <AssetIcon symbol={asset.symbol} />
+                      <div className="min-w-0 flex-1">
+                        <p className="truncate text-sm font-semibold">{asset.symbol}</p>
+                        <p className="truncate text-xs text-muted-foreground">{asset.name}</p>
+                      </div>
+                      <Sparkline
+                        values={asset.spark}
+                        positive={asset.change24h >= 0}
+                        className="hidden h-7 w-16 sm:block"
+                      />
+                      <div className="shrink-0 text-right">
+                        <p className="num text-sm font-semibold">{currency(asset.price)}</p>
+                        <Delta value={asset.change24h} className="text-xs" />
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
+          </Card>
 
           <Card>
             <CardHeader
@@ -250,41 +302,6 @@ export default function Dashboard() {
               ))}
               <DemoNotice>Past performance does not guarantee future results.</DemoNotice>
             </CardBody>
-          </Card>
-
-          <Card>
-            <CardHeader title="Market highlights" />
-            {marketsReq.loading ? (
-              <LoadingState rows={3} />
-            ) : (
-              <ul>
-                {marketsReq.data
-                  .slice()
-                  .sort((a, b) => Math.abs(b.change24h) - Math.abs(a.change24h))
-                  .slice(0, 4)
-                  .map((asset) => (
-                    <li
-                      key={asset.symbol}
-                      className="flex items-center gap-3 border-b border-border px-5 py-3 last:border-0"
-                    >
-                      <AssetIcon symbol={asset.symbol} />
-                      <div className="min-w-0 flex-1">
-                        <p className="truncate text-sm font-semibold">{asset.symbol}</p>
-                        <p className="truncate text-xs text-muted-foreground">{asset.name}</p>
-                      </div>
-                      <Sparkline
-                        values={asset.spark}
-                        positive={asset.change24h >= 0}
-                        className="hidden h-7 w-16 sm:block"
-                      />
-                      <div className="shrink-0 text-right">
-                        <p className="num text-sm font-semibold">{currency(asset.price)}</p>
-                        <Delta value={asset.change24h} className="text-xs" />
-                      </div>
-                    </li>
-                  ))}
-              </ul>
-            )}
           </Card>
         </div>
       </div>
