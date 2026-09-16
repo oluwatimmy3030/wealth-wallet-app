@@ -14,7 +14,7 @@ export default function Header({ onOpenMenu }) {
   const [query, setQuery] = useState("");
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border bg-background/85 backdrop-blur-md">
+    <header className="sticky top-0 z-50 border-b border-border bg-background/85 backdrop-blur-md pt-[env(safe-area-inset-top)]">
       <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 py-3 lg:px-8">
         <div className="flex min-w-0 items-center gap-3">
           <button

@@ -14,7 +14,7 @@ export default function AppLayout() {
   }, [pathname]);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen overflow-x-hidden bg-background">
       <div className="mx-auto flex w-full max-w-[1600px]">
         <aside className="sticky top-0 hidden h-screen w-64 shrink-0 lg:block">
           <Sidebar />
@@ -22,7 +22,7 @@ export default function AppLayout() {
 
         <div className="min-w-0 flex-1">
           <Header onOpenMenu={() => setDrawerOpen(true)} />
-          <main className="animate-rise px-4 pb-24 pt-5 lg:px-8 lg:pb-12">
+          <main className="animate-rise px-4 pb-24 pt-20 sm:pt-16 lg:px-8 lg:pb-12 lg:pt-5">
             <Outlet />
           </main>
         </div>

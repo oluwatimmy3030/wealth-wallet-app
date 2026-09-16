@@ -147,7 +147,7 @@ export default function Trade() {
                 <EmptyState title="No open positions" description="Your positions will appear here." />
               ) : (
                 <div className="overflow-x-auto">
-                  <table className="w-full min-w-[640px] text-sm">
+                  <table className="w-full min-w-full text-xs sm:text-sm sm:min-w-[640px]">
                     <thead className="text-left text-xs uppercase tracking-wide text-muted-foreground">
                       <tr className="border-b border-border">
                         <th className="px-5 py-3 font-medium">Asset</th>
@@ -155,20 +155,20 @@ export default function Trade() {
                         <th className="px-5 py-3 text-right font-medium">Qty</th>
                         <th className="px-5 py-3 text-right font-medium">Entry</th>
                         <th className="px-5 py-3 text-right font-medium">Mark</th>
-                        <th className="px-5 py-3 text-right font-medium">P&L</th>
+                        <th className="px-5 py-3 text-right font-medium">P&amp;L</th>
                       </tr>
                     </thead>
                     <tbody>
                       {positionsReq.data.map((p) => (
                         <tr key={p.id} className="border-b border-border last:border-0">
-                          <td className="px-5 py-3 font-semibold">{p.symbol}</td>
-                          <td className="px-5 py-3 capitalize text-muted-foreground">{p.side}</td>
-                          <td className="num px-5 py-3 text-right">{number(p.quantity, 4)}</td>
-                          <td className="num px-5 py-3 text-right">{currency(p.entryPrice)}</td>
-                          <td className="num px-5 py-3 text-right">{currency(p.markPrice)}</td>
+                          <td className="whitespace-nowrap px-5 py-3 font-semibold">{p.symbol}</td>
+                          <td className="whitespace-nowrap px-5 py-3 capitalize text-muted-foreground">{p.side}</td>
+                          <td className="whitespace-nowrap num px-5 py-3 text-right">{number(p.quantity, 4)}</td>
+                          <td className="whitespace-nowrap num px-5 py-3 text-right">{currency(p.entryPrice)}</td>
+                          <td className="whitespace-nowrap num px-5 py-3 text-right">{currency(p.markPrice)}</td>
                           <td
                             className={cx(
-                              "num px-5 py-3 text-right font-semibold",
+                              "whitespace-nowrap num px-5 py-3 text-right font-semibold",
                               p.pnl >= 0 ? "text-positive" : "text-negative",
                             )}
                           >
@@ -184,7 +184,7 @@ export default function Trade() {
               <LoadingState />
             ) : (
               <div className="overflow-x-auto">
-                <table className="w-full min-w-[640px] text-sm">
+                <table className="w-full min-w-full text-xs sm:text-sm sm:min-w-[640px]">
                   <thead className="text-left text-xs uppercase tracking-wide text-muted-foreground">
                     <tr className="border-b border-border">
                       <th className="px-5 py-3 font-medium">Order</th>
@@ -197,14 +197,14 @@ export default function Trade() {
                   <tbody>
                     {ordersReq.data.map((o) => (
                       <tr key={o.id} className="border-b border-border last:border-0">
-                        <td className="px-5 py-3">
+                        <td className="whitespace-nowrap px-5 py-3">
                           <span className="font-semibold">{o.symbol}</span>{" "}
                           <span className="capitalize text-muted-foreground">{o.side}</span>
                         </td>
-                        <td className="px-5 py-3 capitalize text-muted-foreground">{o.type}</td>
-                        <td className="num px-5 py-3 text-right">{number(o.quantity, 4)}</td>
-                        <td className="num px-5 py-3 text-right">{currency(o.price)}</td>
-                        <td className="px-5 py-3 text-right">
+                        <td className="whitespace-nowrap px-5 py-3 capitalize text-muted-foreground">{o.type}</td>
+                        <td className="whitespace-nowrap num px-5 py-3 text-right">{number(o.quantity, 4)}</td>
+                        <td className="whitespace-nowrap num px-5 py-3 text-right">{currency(o.price)}</td>
+                        <td className="whitespace-nowrap px-5 py-3 text-right">
                           <StatusBadge status={o.status} />
                         </td>
                       </tr>
